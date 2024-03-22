@@ -2,6 +2,11 @@ import cv2
 import os
 import numpy as np;
 
+class Blob:
+    def __init__(self, size, avgColour):
+        self.size = size
+        self.avgColour = avgColour
+    
 # # directory only containing pictures
 # directory = r"C:\test"
 
@@ -25,6 +30,7 @@ upper_fire = np.array([25,255,255])
 
 
 # detector = cv2.SimpleBlobDetector_create(params)
+
 
 
 
@@ -80,10 +86,9 @@ def get_sobel(img, size = -1):
 #pic = cv2.resize(cv2.imread(r"C:\test\fire.jpg"), (512, 512), interpolation = cv2.INTER_NEAREST)
 
 
+allblobs = []
 
-#TODO: get average value per blob, compute weighted average for size of blob
-
-pic = cv2.imread(r"C:\test\article.jpg")
+pic = cv2.imread(r"C:\test\article.jpg") #Original pic, dont touch this
 hsv = cv2.cvtColor(pic, cv2.COLOR_BGR2HSV)
 mask = cv2.inRange(hsv, lower_fire, upper_fire)
 result_c = cv2.bitwise_and(pic, pic, mask=mask)
@@ -95,18 +100,24 @@ cv2.imshow("test", black)
 ret, thresh = cv2.threshold(black, 1, 1, 1)
 contours, hierarchy  = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 print(len(contours))
+
+
 contour_mask = np.zeros(pic.shape, dtype = np.uint8)
 contour_mask = cv2.bitwise_xor(pic, pic)
-cv2.drawContours(contour_mask, [contours[205]], -1, (255,255,255), cv2.FILLED)
+# cv2.drawContours(contour_mask, [contours[205]], -1, (255,255,255), cv2.FILLED)
 
 cv2.imshow("one", contour_mask)
-# for cnt in contours:
-    
-#     cv2.drawContours(pic, [cnt], 0, (250,0,250), cv2.LINE_4)
-    
-    
+for i, cnt in enumerate(contours):
+    mask2 = np.zeros(pic.shape[:2], np.uint8)
+    cv2.drawContours(mask2, cnt, -1, (255,255,255), cv2.FILLED)
+    print(cv2.mean(pic, mask=mask2)[:3])
+    print(cv2.meanStdDev(pic, mask=mask2)[0][0])
+    #allblobs.append(Blob(size=cv2.contourArea(cnt), avgColour=cv2.mean(pic, mask=mask2)))
+    cv2.drawContours(contour_mask, [cnt], 0, (250,0,250), cv2.LINE_4)
+    #print(allblobs[i])
 
-cv2.imshow('img', pic)
+    
+cv2.imshow('img', contour_mask)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
