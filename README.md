@@ -1,8 +1,8 @@
 # SC1015 Mini-Project - FireWatch 🔥👀
 
-Nanyang Technological University
-School of Computer Science and Engineering
-Class: FCS1
+Nanyang Technological University \
+School of Computer Science and Engineering \
+Class: FCS1 \
 Team: 2
 
 ## Overview 🧐
