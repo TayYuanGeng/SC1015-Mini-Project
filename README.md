@@ -24,7 +24,7 @@ Welcome to FireWatch, a SC1015 Mini Project dedicated to the detection of fires 
 5. [Data Driven Insights and Conclusion](#5-Data-Driven-Insights-and-Conclusion)
 6. [References](#6-References)
 ---
-### 1. [Problem Formulation] (https://google.com.sg)
+### 1. [Problem Formulation](https://google.com.sg)
 **Dataset Used:** [FIRE Dataset on Kaggle](https://www.kaggle.com/datasets/phylake1337/fire-dataset)
 **Question:** Would it be possible to achieve early detection of fire? 🤔
 
@@ -34,24 +34,24 @@ Welcome to FireWatch, a SC1015 Mini Project dedicated to the detection of fires 
 **Rationale:** Our team firmly believes that both the dataset and question we are exploring hold significant relevance in the global context. As students of SCSE, the development of a fire detection model holds immense potential in providing early warnings to individuals within the vicinity, ultimately facilitating prompt action to isolate and mitigate fires. 
 
 
-### 2. [Data Preparation and Cleaning]
+### 2. [Data Preparation and Cleaning](https://google.com.sg)
 
 
 
-### 3. [Exploratory Data Analysis]
+### 3. [Exploratory Data Analysis](https://google.com.sg)
 
 
 
 
-### 4. [Clustering]
+### 4. [Clustering](https://google.com.sg)
 
 
 
-### 5. [Data Driven Insights and Conclusion]
+### 5. [Data Driven Insights and Conclusion](https://google.com.sg)
 
 
 
-### 6. [References]
+### 6. References
 
 
 
