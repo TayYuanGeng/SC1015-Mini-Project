@@ -1,41 +1,61 @@
-# FireWatch 🔥👀
+# SC1015 Mini-Project - FireWatch 🔥👀
 
-## Overview
+Nanyang Technological University
+School of Computer Science and Engineering
+Class: FCS1
+Team: 2
+
+## Overview 🧐
 
 Welcome to FireWatch, a SC1015 Mini Project dedicated to the detection of fires through image analysis. By harnessing the power of cutting-edge computer vision and machine learning technologies, FireWatch is designed to swiftly identify the presence of fire in images captured by cameras or sensors. Our mission is to provide a reliable and efficient solution for early fire detection, ultimately contributing to enhanced safety and protection against wildfires.
 
-## Objectives
+## Objectives 🎯
 
-- Develop an automated system capable of accurately detecting fire in images.
 - Employ advanced image processing techniques to enhance image quality and extract pertinent features.
 - Implement state-of-the-art machine learning algorithms to classify images based on the presence of fire.
 - Evaluate and optimize the performance of the fire detection model to ensure reliability and efficiency.
 
-## Key Features
+---
+### Table of Contents:
+1. [Problem Formulation](#1-Problem-Formlation)
+2. [Data Preparation and Cleaning](#2-Data-Preparation-and-Cleaning)
+3. [Exploratory Data Analysis](#3-Exploratory-Data-Analysis)
+4. [Clustering](#4-Clustering)
+5. [Data Driven Insights and Conclusion](#5-Data-Driven-Insights-and-Conclusion)
+6. [References](#6-References)
+---
+### 1. [Problem Formulation] (https://google.com.sg)
+**Dataset Used:** [FIRE Dataset on Kaggle](https://www.kaggle.com/datasets/phylake1337/fire-dataset)
+**Question:** Would it be possible to achieve early detection of fire? 🤔
 
-🔥 **Image Preprocessing**: Our system employs sophisticated preprocessing techniques to clean and enhance images, ensuring optimal quality for analysis.
+**Success:** Determined using blobs formed by CV2 \
+**Exceptions:** Outliers/Anomalies found in blobbing images with intense lighting or color mixtures closely resembling brown 🚨🔍
 
-🔍 **Feature Extraction**: We extract a comprehensive range of features from images using advanced image processing methods, enabling precise analysis and classification.
+**Rationale:** Our team firmly believes that both the dataset and question we are exploring hold significant relevance in the global context. As students of SCSE, the development of a fire detection model holds immense potential in providing early warnings to individuals within the vicinity, ultimately facilitating prompt action to isolate and mitigate fires. 
 
-🤖 **Machine Learning Model**: FireWatch utilizes powerful machine learning algorithms to train a robust classification model, enabling accurate detection of fire in images.
 
-🚀 **Real-time Detection**: Our system is capable of performing real-time fire detection on streaming images or videos, providing immediate alerts and responses.
+### 2. [Data Preparation and Cleaning]
 
-## Technologies
 
-- **Python**: The primary programming language for implementing image processing algorithms and machine learning models.
-- **OpenCV**: A versatile library for computer vision tasks, including image processing, object detection, and feature extraction.
-- **Scikit-learn**: A powerful library for machine learning algorithms, facilitating the development of classification models.
 
-## Usage
+### 3. [Exploratory Data Analysis]
 
-1. **Image Dataset**: Gather or obtain a diverse dataset of images containing examples of fire and non-fire scenes.
-2. **Preprocessing**: Preprocess the images using our advanced techniques to enhance quality and extract relevant features.
-3. **Feature Extraction**: Utilize our feature extraction methods to capture key characteristics from the preprocessed images.
-4. **Model Training**: Train a machine learning model using the extracted features and corresponding labels to distinguish between fire and non-fire images.
-5. **Evaluation**: Evaluate the performance of the trained model using comprehensive metrics such as accuracy, precision, recall, and F1-score.
 
-## Contributors
+
+
+### 4. [Clustering]
+
+
+
+### 5. [Data Driven Insights and Conclusion]
+
+
+
+### 6. [References]
+
+
+
+## Contributors 👩‍💻👨‍💻
 
 - [Anthony See](https://github.com/slightly-unrelated)
 - [Tay Yuan Geng](https://github.com/TayYuanGeng)
