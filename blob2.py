@@ -98,12 +98,10 @@ def get_variables (pic):
     total_area = 0
     all_blobs = []
 
-
-    #cv2.imshow("test", result)
     ret, thresh = cv2.threshold(result, 127,255,cv2.THRESH_BINARY)
     contours, hierarchy  = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     blob_count = len(contours)
-    print("total number of blobs: " + str(blob_count))
+    #print("total number of blobs: " + str(blob_count))
 
 
     contour_mask = np.zeros(pic.shape[:2], np.uint8)
@@ -163,7 +161,9 @@ def process_variables (input:list):
 with open("./output.csv", "w", newline='') as output_file:
     writer = csv.writer(output_file)
     writer.writerow(["size", "avg_b", "avg_g", "avg_r", "avg_h", "avg_s", "avg_v", "std_b", "std_g", "std_r", "std_h", "std_s", "std_v", "blob_count"])
-    for file in os.listdir(directory):
+    length = len(os.listdir(directory))
+    for i, file in enumerate(os.listdir(directory)):
+        print ("File %d of %d" % (i+1, length) )
         if(file.endswith(".png") or file.endswith(".jpg")):
             pic = cv2.resize(cv2.imread(rf"{directory}\{file}"), (512, 512), interpolation = cv2.INTER_NEAREST)
             writer.writerow(process_variables(get_variables(pic)))
