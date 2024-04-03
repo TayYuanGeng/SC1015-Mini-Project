@@ -1,14 +1,26 @@
 import cv2
 import os
 import numpy as np;
+import csv
 
 class Blob:
-    def __init__(self, size, avgColour):
+    def __init__(self, size:int):
         self.size = size
-        self.avgColour = avgColour
+        self.avg_b, self.avg_g, self.avg_r, self.avg_h, self.avg_s, self.avg_v = [0] * 6
+        self.std_b, self.std_g, self.std_r, self.std_h, self.std_s, self.std_v = [0] * 6
+        self.wavg_multiplier = 0.0
+        
+    def fakeEnum(self, num:int):
+        returndict = ["size", "avg_b", "avg_g", "avg_r", "avg_h", "avg_s", "avg_v", "std_b", "std_g", "std_r", "std_h", "std_s", "std_v", "wavg_multiplier"]
+        return (returndict[num])
     
+    def __iter__(self):
+          for each in self.__dict__.values():
+              yield each
+        
+       
 # # directory only containing pictures
-# directory = r"C:\test"
+directory = r"C:\test"
 
 # #creates a new dir for formatted pictures
 # save_dir = directory + "\\formatted"
@@ -16,26 +28,13 @@ class Blob:
 #     os.makedirs(save_dir)
 
 # define range of fire color in HSV
-lower_fire = np.array([0,50,50])
-upper_fire = np.array([25,255,255])
-
-
-# params = cv2.SimpleBlobDetector_Params()
- 
-# # Change thresholds
-# params.minThreshold = 10
-# params.maxThreshold = 2000
- 
-
-
-
-# detector = cv2.SimpleBlobDetector_create(params)
-
-
+LOWER_FIRE = np.array([0,50,50])
+UPPER_FIRE = np.array([25,255,255])
+SIZE_FILTER = 5 #in pixels
 
 
 def unsharp_mask(img, blur_size = (5,5), imgWeight = 1.5, gaussianWeight = -0.5):
-    gaussian = cv2.GaussianBlur(img, (5,5), 0)
+    gaussian = cv2.GaussianBlur(img, blur_size, 0)
     return cv2.addWeighted(img, imgWeight, gaussian, gaussianWeight, 0)
 
 
@@ -72,6 +71,101 @@ def get_sobel(img, size = -1):
     abs_sobel64f = np.absolute(sobelx64f)
     return np.uint8(abs_sobel64f)
 
+def bgr_to_hsv(bgr_val):
+    b, g, r = bgr_val[0]/255.0, bgr_val[1]/255.0, bgr_val[2]/255.0
+    mx = max(b, g, r)
+    mn = min(b, g, r)
+    df = mx-mn
+    hsv_val = [0,0,0]
+    if mx == mn:
+        hsv_val[0] = 0
+    elif mx == r:
+        hsv_val[0] = (60 * ((g-b)/df) + 360) % 360
+    elif mx == g:
+        hsv_val[0] = (60 * ((b-r)/df) + 120) % 360
+    elif mx == b:
+        hsv_val[0] = (60 * ((r-g)/df) + 240) % 360
+    if mx == 0:
+        hsv_val[1] = 0
+    else:
+        hsv_val[1] = (df/mx)*100
+    hsv_val[2] = mx*100
+    return hsv_val
+        
+def get_variables (pic):
+    hsv = cv2.cvtColor(pic, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, LOWER_FIRE, UPPER_FIRE)
+    result = smoother_edges(mask, (5,5))
+    total_area = 0
+    all_blobs = []
+
+
+    #cv2.imshow("test", result)
+    ret, thresh = cv2.threshold(result, 127,255,cv2.THRESH_BINARY)
+    contours, hierarchy  = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    blob_count = len(contours)
+    print("total number of blobs: " + str(blob_count))
+
+
+    contour_mask = np.zeros(pic.shape[:2], np.uint8)
+    # cv2.drawContours(contour_mask, [contours[205]], -1, (255,255,255), cv2.FILLED)
+
+    for i, cnt in enumerate(contours):
+        mask2 = np.zeros(pic.shape[:2], np.uint8)
+        cv2.drawContours(mask2, [cnt], 0, (255,255,255), cv2.FILLED)
+        #print(cv2.cvtColor(cv2.mean(pic, mask=mask2)[:3], cv2.COLOR_BGR2HSV))
+        
+        
+        blob_output = Blob(cv2.countNonZero(mask2))
+        
+        if (blob_output.size < SIZE_FILTER):
+            continue
+        
+        total_area += blob_output.size
+        bgr_mean, bgr_stddev = cv2.meanStdDev(pic, mask=mask2)
+        bgr_mean = bgr_mean[:3]
+        bgr_stddev = bgr_stddev[:3]
+        
+        blob_output.avg_b = bgr_mean[0]
+        blob_output.avg_g = bgr_mean[1]
+        blob_output.avg_r = bgr_mean[2]
+        hsv_mean = bgr_to_hsv(bgr_mean)
+        blob_output.avg_h = hsv_mean[0]
+        blob_output.avg_s = hsv_mean[1]
+        blob_output.avg_v = hsv_mean[2]
+        
+        blob_output.std_b = bgr_stddev[0]
+        blob_output.std_g = bgr_stddev[1]
+        blob_output.std_r = bgr_stddev[2]
+        hsv_stddev = bgr_to_hsv(bgr_stddev)
+        blob_output.std_h = hsv_stddev[0]
+        blob_output.std_s = hsv_stddev[1]
+        blob_output.std_v = hsv_stddev[2]
+        
+        all_blobs.append(blob_output)
+        cv2.drawContours(contour_mask, [cnt], 0, (255,255,255), cv2.FILLED)
+
+    for j in all_blobs:
+        j.wavg_multiplier = j.size / total_area
+    
+    return (all_blobs, blob_count)
+
+def process_variables (input:list):
+    all_blobs:list
+    all_blobs, blob_count = input
+    output = [0] * 12
+    for x in all_blobs:
+        x:Blob
+        for i , y in enumerate(x):
+            output[i%12] = y
+        
+        print(output)
+    
+            
+    
+            
+        
+        
 
 # pic = cv2.resize(cv2.imread(r"C:\test\blobs4.jpg"), (512, 512), interpolation = cv2.INTER_NEAREST)
 
@@ -86,66 +180,35 @@ def get_sobel(img, size = -1):
 #pic = cv2.resize(cv2.imread(r"C:\test\fire.jpg"), (512, 512), interpolation = cv2.INTER_NEAREST)
 
 
-allblobs = []
+for file in os.listdir(directory):
+    if(file.endswith(".png") or file.endswith(".jpg")):
+        pic = cv2.resize(cv2.imread(rf"{directory}\{file}"), (512, 512), interpolation = cv2.INTER_NEAREST)
+        process_variables(get_variables(pic))
+        
+            
+            
 
-pic = cv2.imread(r"C:\test\article.jpg") #Original pic, dont touch this
-hsv = cv2.cvtColor(pic, cv2.COLOR_BGR2HSV)
-mask = cv2.inRange(hsv, lower_fire, upper_fire)
-result_c = cv2.bitwise_and(pic, pic, mask=mask)
-result = cv2.bitwise_not(mask)
+        # filename = f'{file.replace(".png","")}_blob.png'
+        # os.chdir(save_dir)
+        # cv2.imwrite(filename,result)
 
-black = smoother_edges(result, (5,5))
-
-cv2.imshow("test", black)
-ret, thresh = cv2.threshold(black, 1, 1, 1)
-contours, hierarchy  = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-print(len(contours))
-
-
-contour_mask = np.zeros(pic.shape, dtype = np.uint8)
-contour_mask = cv2.bitwise_xor(pic, pic)
-# cv2.drawContours(contour_mask, [contours[205]], -1, (255,255,255), cv2.FILLED)
-
-cv2.imshow("one", contour_mask)
-for i, cnt in enumerate(contours):
-    mask2 = np.zeros(pic.shape[:2], np.uint8)
-    cv2.drawContours(mask2, cnt, -1, (255,255,255), cv2.FILLED)
-    print(cv2.mean(pic, mask=mask2)[:3])
-    print(cv2.meanStdDev(pic, mask=mask2)[0][0])
-    #allblobs.append(Blob(size=cv2.contourArea(cnt), avgColour=cv2.mean(pic, mask=mask2)))
-    cv2.drawContours(contour_mask, [cnt], 0, (250,0,250), cv2.LINE_4)
-    #print(allblobs[i])
-
+# with open(r".\output.csv", "w", newline='') as output_file:
+#     writer = csv.writer(output_file)
+#     writer.writerow(["avg_h", "avg_s", "avg_v", "avg_b", "avg_g", "avg_r", "wavg_multiplier", "size"])
+#     for i  in all_blobs:
+#         writer.writerow([i.avg_h, i.avg_s, i.avg_v, i.avg_b, i.avg_g, i.avg_r, i.wavg_multiplier, i.size])
     
-cv2.imshow('img', contour_mask)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+
+# cv2.imshow('img', contour_mask)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
 
 
 
-# for file in os.listdir(directory):
-#     if(file.endswith(".png") or file.endswith(".jpg")):
-#         pic = cv2.resize(cv2.imread(rf"{directory}\{file}"), (512, 512), interpolation = cv2.INTER_NEAREST)
-#         hsv = cv2.cvtColor(pic, cv2.COLOR_BGR2HSV)
-#         # cv2.imshow("aa",hsv)
-#         # cv2.waitKey(0)
-#         mask = cv2.inRange(hsv, lower_fire, upper_fire)
-#         result_c = cv2.bitwise_and(pic, pic, mask=mask)
-#         result = cv2.bitwise_not(mask)
-        
-#         keypoints = detector.detect(result)
-        
 
-#         im_with_keypoints = cv2.drawKeypoints(result, keypoints, np.array([]), (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
-#         cv2.imshow("Keypoints", im_with_keypoints)
-#         cv2.waitKey(0)
-
-#         # filename = f'{file.replace(".png","")}_blob.png'
-#         # os.chdir(save_dir)
-#         # cv2.imwrite(filename,result)
 
 
 
