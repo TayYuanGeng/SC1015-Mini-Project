@@ -4,15 +4,14 @@ import numpy as np;
 import csv
 
 class Blob:
-    def __init__(self, size:int):
+    def __init__(self, size):
         self.size = size
-        self.avg_b, self.avg_g, self.avg_r, self.avg_h, self.avg_s, self.avg_v = [0] * 6
-        self.std_b, self.std_g, self.std_r, self.std_h, self.std_s, self.std_v = [0] * 6
+        self.avg_b, self.avg_g, self.avg_r, self.avg_h, self.avg_s, self.avg_v = 0,0,0,0,0,0
+        self.std_b, self.std_g, self.std_r, self.std_h, self.std_s, self.std_v = 0,0,0,0,0,0
         self.wavg_multiplier = 0.0
         
-    def fakeEnum(self, num:int):
-        returndict = ["size", "avg_b", "avg_g", "avg_r", "avg_h", "avg_s", "avg_v", "std_b", "std_g", "std_r", "std_h", "std_s", "std_v", "wavg_multiplier"]
-        return (returndict[num])
+    def __enum__(self, num:int):
+        return (["size", "avg_b", "avg_g", "avg_r", "avg_h", "avg_s", "avg_v", "std_b", "std_g", "std_r", "std_h", "std_s", "std_v", "wavg_multiplier"][num])
     
     def __iter__(self):
           for each in self.__dict__.values():
@@ -20,7 +19,7 @@ class Blob:
         
        
 # # directory only containing pictures
-directory = r"C:\test"
+directory = "./dataset"
 
 # #creates a new dir for formatted pictures
 # save_dir = directory + "\\formatted"
@@ -72,7 +71,7 @@ def get_sobel(img, size = -1):
     return np.uint8(abs_sobel64f)
 
 def bgr_to_hsv(bgr_val):
-    b, g, r = bgr_val[0]/255.0, bgr_val[1]/255.0, bgr_val[2]/255.0
+    b, g, r = bgr_val.item(0)/255.0, bgr_val.item(1)/255.0, bgr_val.item(2)/255.0
     mx = max(b, g, r)
     mn = min(b, g, r)
     df = mx-mn
@@ -114,9 +113,9 @@ def get_variables (pic):
         mask2 = np.zeros(pic.shape[:2], np.uint8)
         cv2.drawContours(mask2, [cnt], 0, (255,255,255), cv2.FILLED)
         #print(cv2.cvtColor(cv2.mean(pic, mask=mask2)[:3], cv2.COLOR_BGR2HSV))
-        
-        
+
         blob_output = Blob(cv2.countNonZero(mask2))
+        
         
         if (blob_output.size < SIZE_FILTER):
             continue
@@ -126,17 +125,17 @@ def get_variables (pic):
         bgr_mean = bgr_mean[:3]
         bgr_stddev = bgr_stddev[:3]
         
-        blob_output.avg_b = bgr_mean[0]
-        blob_output.avg_g = bgr_mean[1]
-        blob_output.avg_r = bgr_mean[2]
+        blob_output.avg_b = bgr_mean.item(0)
+        blob_output.avg_g = bgr_mean.item(1)
+        blob_output.avg_r = bgr_mean.item(2)
         hsv_mean = bgr_to_hsv(bgr_mean)
         blob_output.avg_h = hsv_mean[0]
         blob_output.avg_s = hsv_mean[1]
         blob_output.avg_v = hsv_mean[2]
         
-        blob_output.std_b = bgr_stddev[0]
-        blob_output.std_g = bgr_stddev[1]
-        blob_output.std_r = bgr_stddev[2]
+        blob_output.std_b = bgr_stddev.item(0)
+        blob_output.std_g = bgr_stddev.item(1)
+        blob_output.std_r = bgr_stddev.item(2)
         hsv_stddev = bgr_to_hsv(bgr_stddev)
         blob_output.std_h = hsv_stddev[0]
         blob_output.std_s = hsv_stddev[1]
@@ -153,56 +152,22 @@ def get_variables (pic):
 def process_variables (input:list):
     all_blobs:list
     all_blobs, blob_count = input
-    output = [0] * 12
+    output = [0] * 14
     for x in all_blobs:
         x:Blob
-        for i , y in enumerate(x):
-            output[i%12] = y
+        for i, y in enumerate(x):
+            output[i] += y * x.wavg_multiplier
+        output[13] = blob_count
+    return output
         
-        print(output)
-    
-            
-    
-            
-        
-        
+with open("./output.csv", "w", newline='') as output_file:
+    writer = csv.writer(output_file)
+    writer.writerow(["size", "avg_b", "avg_g", "avg_r", "avg_h", "avg_s", "avg_v", "std_b", "std_g", "std_r", "std_h", "std_s", "std_v", "blob_count"])
+    for file in os.listdir(directory):
+        if(file.endswith(".png") or file.endswith(".jpg")):
+            pic = cv2.resize(cv2.imread(rf"{directory}\{file}"), (512, 512), interpolation = cv2.INTER_NEAREST)
+            writer.writerow(process_variables(get_variables(pic)))
 
-# pic = cv2.resize(cv2.imread(r"C:\test\blobs4.jpg"), (512, 512), interpolation = cv2.INTER_NEAREST)
-
-# cv2.imshow("Keypoints", smoother_edges(pic, (9,9)))
-# cv2.waitKey(0)
-# cv2.imshow("Keypoints", pic)
-# cv2.waitKey(0)
-
-
-#file = cv2.resize(cv2.imread(r"C:\test\BlobTest.jpg"), (512, 512), interpolation = cv2.INTER_NEAREST)
-
-#pic = cv2.resize(cv2.imread(r"C:\test\fire.jpg"), (512, 512), interpolation = cv2.INTER_NEAREST)
-
-
-for file in os.listdir(directory):
-    if(file.endswith(".png") or file.endswith(".jpg")):
-        pic = cv2.resize(cv2.imread(rf"{directory}\{file}"), (512, 512), interpolation = cv2.INTER_NEAREST)
-        process_variables(get_variables(pic))
-        
-            
-            
-
-        # filename = f'{file.replace(".png","")}_blob.png'
-        # os.chdir(save_dir)
-        # cv2.imwrite(filename,result)
-
-# with open(r".\output.csv", "w", newline='') as output_file:
-#     writer = csv.writer(output_file)
-#     writer.writerow(["avg_h", "avg_s", "avg_v", "avg_b", "avg_g", "avg_r", "wavg_multiplier", "size"])
-#     for i  in all_blobs:
-#         writer.writerow([i.avg_h, i.avg_s, i.avg_v, i.avg_b, i.avg_g, i.avg_r, i.wavg_multiplier, i.size])
-    
-
-
-# cv2.imshow('img', contour_mask)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
 
 
 
