@@ -125,4 +125,3 @@ cython_debug/
 
 # VS Code
 .vscode/
-dataset/
