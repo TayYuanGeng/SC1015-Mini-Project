@@ -25,8 +25,8 @@ Welcome to FireWatch, a SC1015 Mini Project dedicated to the detection of fires 
 6. [References](#6-References)
 ---
 ### 1. [Problem Formulation](https://google.com.sg)
-**Dataset Used:** [FIRE Dataset on Kaggle](https://www.kaggle.com/datasets/phylake1337/fire-dataset)
-**Question:** Would it be possible to achieve early detection of fire? 🤔
+**Dataset Used:** [FIRE Dataset on Kaggle](https://www.kaggle.com/datasets/phylake1337/fire-dataset) \
+**Question:** Would it be possible to achieve detection of fire via images? 🤔
 
 **Success:** Determined using blobs formed by CV2 \
 **Exceptions:** Outliers/Anomalies found in blobbing images with intense lighting or color mixtures closely resembling brown 🚨🔍
