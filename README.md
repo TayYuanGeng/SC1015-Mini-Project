@@ -53,13 +53,13 @@ In this section, we delved into the data to streamline the predictors used in ou
 
 Our approach involved:
 
-Visualization with catplot: We initially used a catplot to visualize the distribution of fire and non-fire images in our dataset. This revealed a significant class imbalance, with approximately 70% more fire images than non-fire images. To address this, we undertook a rebalancing strategy, undersampling the fire images to mitigate potential overfitting.
+<b>Visualization with catplot:</b> We initially used a catplot to visualize the distribution of fire and non-fire images in our dataset. This revealed a significant class imbalance, with approximately 70% more fire images than non-fire images. To address this, we undertook a rebalancing strategy, undersampling the fire images to mitigate potential overfitting.
 
-Exploring data spread: We examined the data spread both before and after rebalancing, focusing on variables related to color intensity. Notably, the spread of these variables appeared similar. We identified `std_h` and `blob_count` as the most skewed variables suitable for transformation.
+<b>Exploring data spread:</b> We examined the data spread both before and after rebalancing, focusing on variables related to color intensity. Notably, the spread of these variables appeared similar. We identified `std_h` and `blob_count` as the most skewed variables suitable for transformation.
 
-Transformation selection: Opting for the Yeo-Johnson Transformation, we chose a method capable of handling zero values and eliminating the need for specifying an initial transformation parameter, λ.
+<b>Transformation selection:</b> Opting for the Yeo-Johnson Transformation, we chose a method capable of handling zero values and eliminating the need for specifying an initial transformation parameter, λ.
 
-Q-Q Plot analysis: Q-Q Plots were utilized to visualize the effect of transformation on the data distribution. A substantial shift in skewness was observed for both `std_h` and `blob_count`, indicating a closer resemblance to a normal distribution post-transformation.
+<b>Q-Q Plot analysis:</b> Q-Q Plots were utilized to visualize the effect of transformation on the data distribution. A substantial shift in skewness was observed for both `std_h` and `blob_count`, indicating a closer resemblance to a normal distribution post-transformation.
 
 By executing these steps, we aimed to refine our dataset and prepare it for improved model performance.
 
