@@ -40,11 +40,11 @@ In this phase, we've prepared and processed our dataset to enhance our data anal
 
 Here's what we've accomplished:
 
-Development of blob2.py: This custom script assists in pinpointing areas within the images where fire could be detected by utilizing blobbing techniques, thereby capturing color and intensity values and storing them in a CSV format.
+<b>Development of blob2.py:</b> This custom script assists in pinpointing areas within the images where fire could be detected by utilizing blobbing techniques, thereby capturing color and intensity values and storing them in a CSV format.
 
-Preliminary Feature Selection: Out of the 16 available variables, we've carefully chosen `15` relevant ones. Among these, `14` serve as predictors, while the remaining variable, `fire` serves as the response.
+<b>Preliminary Feature Selection:</b> Out of the 16 available variables, we've carefully chosen `15` relevant ones. Among these, `14` serve as predictors, while the remaining variable, `fire` serves as the response.
 
-Identification of Zero Rows: During our analysis, we observed several rows containing all zeros, indicating that blobbing was not performed on those corresponding images. To validate this, we cross-checked the image names against these zero rows, ensuring that our Python code didn't overlook blobbing for them, affirming that they represent non-fire images.
+<b>Identification of Zero Rows:</b> During our analysis, we observed several rows containing all zeros, indicating that blobbing was not performed on those corresponding images. To validate this, we cross-checked the image names against these zero rows, ensuring that our Python code didn't overlook blobbing for them, affirming that they represent non-fire images.
 
 
 ### 3. Exploratory Data Analysis
