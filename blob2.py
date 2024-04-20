@@ -19,7 +19,8 @@ class Blob:
         
        
 # # directory only containing pictures
-directory = "./dataset"
+directory = os.path.dirname(os.path.realpath(__file__)) + "/dataset" #MacOS probs
+# directory = "./dataset"
 
 # #creates a new dir for formatted pictures
 # save_dir = directory + "\\formatted"
@@ -158,22 +159,16 @@ def process_variables (input:list):
         output[13] = blob_count
     return output
         
-with open("./output.csv", "w", newline='') as output_file:
+with open(os.path.dirname(os.path.realpath(__file__)) + "/output/output_stats.csv", "w", newline='') as output_file:
     writer = csv.writer(output_file)
-    writer.writerow(["size", "avg_b", "avg_g", "avg_r", "avg_h", "avg_s", "avg_v", "std_b", "std_g", "std_r", "std_h", "std_s", "std_v", "blob_count"])
+    writer.writerow(["image_name", "size", "avg_b", "avg_g", "avg_r", "avg_h", "avg_s", "avg_v", "std_b", "std_g", "std_r", "std_h", "std_s", "std_v", "blob_count", "fire"])
     length = len(os.listdir(directory))
     for i, file in enumerate(os.listdir(directory)):
         print ("File %d of %d" % (i+1, length) )
         if(file.endswith(".png") or file.endswith(".jpg")):
-            pic = cv2.resize(cv2.imread(rf"{directory}\{file}"), (512, 512), interpolation = cv2.INTER_NEAREST)
-            writer.writerow(process_variables(get_variables(pic)))
-
-
-
-
-
-
-
-
-
-
+            try:
+                pic = cv2.resize(cv2.imread(rf"{directory}/{file}"), (512, 512), interpolation = cv2.INTER_NEAREST)
+                writer.writerow([file, *process_variables(get_variables(pic)), 0 if file.find("non_fire") != -1 else 1])
+            except:
+                print(file + " is invalid format!")
+                continue
