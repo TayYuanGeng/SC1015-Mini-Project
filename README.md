@@ -25,7 +25,7 @@ Welcome to FireWatch, a SC1015 Mini Project dedicated to the detection of fires 
 ---
 
 ### 1. Problem Formulation
-<a name="problem-formulation"></a>
+
 **Dataset Used:** [FIRE Dataset on Kaggle](https://www.kaggle.com/datasets/phylake1337/fire-dataset) \
 **Question:** Would it be possible to achieve detection of fire via images? 🤔
 
