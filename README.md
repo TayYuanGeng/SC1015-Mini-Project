@@ -23,6 +23,7 @@ Welcome to FireWatch, a SC1015 Mini Project dedicated to the detection of fires 
 4. [Data Driven Insights](#data-driven-insights)
 5. [Classification & Conclusion](#classification-conclusion)
 ---
+<a name="problem-formulation"></a>
 
 ### 1. Problem Formulation
 
@@ -34,9 +35,10 @@ Welcome to FireWatch, a SC1015 Mini Project dedicated to the detection of fires 
 
 **Rationale:** Our team firmly believes that both the dataset and question we are exploring hold significant relevance in the global context. As students of SCSE, the development of a fire detection model holds immense potential in providing early warnings to individuals within the vicinity, ultimately facilitating prompt action to isolate and mitigate fires. 
 
+<a name="data-preparation-and-cleaning"></a>
 
 ### 2. Data Preparation and Cleaning
-<a name="data-preparation-and-cleaning"></a>
+
 In this phase, we've prepared and processed our dataset to enhance our data analysis and efficiently use our data for the machine learning portion. Since our data comprises images, we've developed blob2.py to aid in generating the dataset.
 
 Here's what we've accomplished:
@@ -47,9 +49,10 @@ Here's what we've accomplished:
 
 <b>Identification of Zero Rows:</b> During our analysis, we observed several rows containing all zeros, indicating that blobbing was not performed on those corresponding images. To validate this, we cross-checked the image names against these zero rows, ensuring that our Python code didn't overlook blobbing for them, affirming that they represent non-fire images.
 
+<a name="exploratory-data-analysis"></a>
 
 ### 3. Exploratory Data Analysis
-<a name="exploratory-data-analysis"></a>
+
 In this section, we delved into the data to streamline the predictors used in our machine learning model, aiming to reduce complexity and computation time.
 
 Our approach involved:
@@ -64,8 +67,10 @@ Our approach involved:
 
 By executing these steps, we aimed to refine our dataset and prepare it for improved model performance.
 
-### 4. Data Driven Insights
 <a name="data-driven-insights"></a>
+
+### 4. Data Driven Insights
+
 To conduct further analysis, we plotted all variables using box plots to identify potential predictors for the response variable (fire).
 
 1. Examining outliers and data spread, we observed clear distinctions between fire and non-fire images for variables such as `avg_r`, `avg_h`, `avg_s`, `avg_v`, `std_s`, `std_v`. These variables exhibit notable differences in data spread between fire and non-fire images, indicating potential relationships worthy of further investigation.
@@ -76,8 +81,10 @@ To conduct further analysis, we plotted all variables using box plots to identif
 
 Through this process, we refined our selection of predictors, focusing on those most likely to contribute meaningfully to our model's predictive power.
 
-### 5. Classification & Conclusion
 <a name="classification-conclusion"></a>
+
+### 5. Classification & Conclusion
+
 After deliberation, we opted to employ a random forest classifier due to its effectiveness in handling non-linear relationships and interactions among a large number of features.
 
 1. To optimize the model's performance, we conducted experiments varying the number of trees and depth parameters.
